@@ -10,17 +10,15 @@ import (
 	"reflect"
 )
 
-
 type dbInstance interface {
 	Connect()
 	Disconnect()
-	GetDriver() dbDriver
 }
 
-
-type dbHandler string
-
-type dbDriver string
+type (
+	dbHandler string
+	dbDriver string
+)
 
 type mongoDBInstance struct {
 	handler dbHandler
@@ -33,13 +31,6 @@ func (m *mongoDBInstance) Connect() {
 
 func (m *mongoDBInstance) Disconnect() {
 	m.handler = ""
-}
-
-func (m *mongoDBInstance) GetDriver() dbDriver {
-	//	return m.driver
-	var drv dbDriver
-	drv = "N/A"
-	return drv
 }
 
 type redisDBInstance struct  {
@@ -61,16 +52,13 @@ func (r *redisDBInstance) GetDriver() dbDriver{
 }
 
 func newRedisDBInstance() *redisDBInstance{
-	var drv dbDriver
-	drv = "test"
 	return &redisDBInstance{
-		driver: drv,
+		driver: "N/A",
 	}
 }	
 
 func newMongoDBInstance() *mongoDBInstance{
-	return &mongoDBInstance{
-	}
+	return &mongoDBInstance{}
 }
 
 func main() {
@@ -83,13 +71,13 @@ func main() {
 	newRedis := newRedisDBInstance()
 	regDBHandler(newRedis)
 	regDBHandler(newMongo)
-	fmt.Println(newRedis.GetDriver())
-	fmt.Println(newMongo.GetDriver())
 }
 
 
 func regDBHandler(dbInst dbInstance) {
 	instance := reflect.TypeOf(dbInst)
-	dbInst.GetDriver()
+	// Here, dbInst is not available because the interface doesn't contain
+	// that function.
+	// dbInst.GetDriver()
 	fmt.Println(instance)
 }
